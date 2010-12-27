@@ -2,7 +2,8 @@
   (:import [java.io LineNumberReader PushbackReader StringReader])
   (:require [clojure.pprint :as pp]
             [clojure.string :as str]
-            [clj-http.client :as client]))
+            [clj-http.client :as client]
+            [net.cgrand.enlive-html :as html]))
 
 (defn retrieve 
   "Retrieve the autodoc index from repo (specified as something like 
@@ -83,3 +84,25 @@ created by add-source "
        (filter (complement :source-text) (:vars doc))))
 
 
+(defn versions 
+  "Returns a list of the different versions documented in the repo.
+Works by scraping the github repo looking for Clojure index files."
+  [repo]
+  (let [url (java.net.URL. (str repo "/tree/gh-pages/"))
+        files (map html/text 
+                   (html/select 
+                    (html/html-resource url) 
+                    [:table#browser :tr :td.content :a]))
+        matches (filter identity (map #(re-matches #"index-(.*)\.clj" %) files))]
+    (map second matches)))
+
+(defn retrieve-all-versions
+  "Returns a hash keyed by the version string of the doc for each version 
+that's available. The optional arg add-sources tells whether to retrieve 
+the source for each var as well."
+  ([repo] (retrieve-all-versions repo false))
+  ([repo add-sources]
+     (into {} 
+           (for [v (versions repo)]
+             [v ((if add-sources add-source identity) 
+                 (retrieve repo v))]))))
