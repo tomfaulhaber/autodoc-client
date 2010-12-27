@@ -32,7 +32,6 @@ out of a string"
 (defn source-for 
   "Pull the source for each of the vars in the file"
   [file vars]
-  (println "FILE:" file)
   (let [lines (str/split-lines 
                (:body (client/get file {:accept :text})))
         vars (sort-by :line vars)]
