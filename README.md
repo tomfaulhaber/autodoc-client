@@ -10,7 +10,7 @@ To get the documentation with sources just do:
 
     (def docs (add-source (retrieve "https://github.com/clojure/clojure" "v1.3")))
 
-Note here that `retrieve` loads the index file from github (see [clojure/index-v1.3.clj](https://github.com/clojure/clojure/blob/gh-pages/index-v1.3.clj) for an example) and `add-source` pull the source data referenced from the var entries into a :source-text key in the map for that var.
+Note here that `retrieve` loads the index file from github (see [clojure/index-v1.3.clj](https://github.com/clojure/clojure/blob/gh-pages/index-v1.3.clj) for an example) and `add-source` pulls the source data referenced from the var entries into a :source-text key in the map for that var.
 
 You can also get a list of versions that are documented for a repo:
 
